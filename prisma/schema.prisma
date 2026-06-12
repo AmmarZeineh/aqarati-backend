@@ -1,0 +1,1019 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/**
+ * =========================
+ * Enums
+ * =========================
+ */
+
+enum UserStatus {
+  /// المستخدم فعال ويقدر يدخل على النظام
+  ACTIVE
+
+  /// المستخدم موقوف ولا يستطيع استخدام النظام
+  DISABLED
+}
+
+enum OfficeStatus {
+  /// المكتب فعال
+  ACTIVE
+
+  /// المكتب موقوف مؤقتاً
+  SUSPENDED
+
+  /// المكتب ضمن الفترة التجريبية
+  TRIAL
+}
+
+enum SubscriptionCodeStatus {
+  /// الكود جاهز للاستخدام
+  ACTIVE
+
+  /// تم استخدام الكود مرة واحدة
+  REDEEMED
+
+  /// تم تعطيل الكود يدوياً قبل الاستخدام
+  DISABLED
+}
+
+enum MemberRole {
+  /// صاحب المكتب، عنده كل الصلاحيات
+  OWNER
+
+  /// مدير داخل المكتب، عنده صلاحيات إدارية
+  ADMIN
+
+  /// موظف عقاري، يضيف ويعدل العقارات حسب الصلاحيات
+  AGENT
+
+  /// مشاهدة فقط بدون تعديل
+  VIEWER
+}
+
+enum PropertyType {
+  /// شقة
+  APARTMENT
+
+  /// بيت مستقل
+  HOUSE
+
+  /// فيلا
+  VILLA
+
+  /// أرض
+  LAND
+
+  /// محل تجاري
+  SHOP
+
+  /// مكتب تجاري
+  OFFICE
+
+  /// مستودع
+  WAREHOUSE
+
+  /// مزرعة
+  FARM
+
+  /// بناء كامل
+  BUILDING
+
+  /// نوع آخر غير موجود بالقائمة
+  OTHER
+}
+
+enum PropertyPurpose {
+  /// العقار للبيع
+  SALE
+
+  /// العقار للإيجار
+  RENT
+}
+
+enum PropertyStatus {
+  /// مسودة، غير جاهز للنشر أو الإرسال
+  DRAFT
+
+  /// متاح حالياً
+  AVAILABLE
+
+  /// محجوز مؤقتاً
+  RESERVED
+
+  /// تم البيع
+  SOLD
+
+  /// تم التأجير
+  RENTED
+
+  /// غير متاح حالياً
+  UNAVAILABLE
+
+  /// يحتاج تأكيد من صاحب العقار
+  NEEDS_CONFIRMATION
+}
+
+enum FurnishingStatus {
+  /// مفروش بالكامل
+  FURNISHED
+
+  /// نصف مفروش
+  SEMI_FURNISHED
+
+  /// غير مفروش
+  UNFURNISHED
+
+  /// حالة الفرش غير معروفة
+  UNKNOWN
+}
+
+enum PhotoVisibility {
+  /// صورة يمكن عرضها للعميل بالرابط العام
+  PUBLIC
+
+  /// صورة داخلية لا تظهر للعميل
+  PRIVATE
+}
+
+enum PublicLinkType {
+  /// رابط لعقار واحد
+  PROPERTY
+
+  /// رابط لمجموعة عقارات
+  COLLECTION
+}
+
+enum PublicLinkStatus {
+  /// الرابط فعال
+  ACTIVE
+
+  /// الرابط معطل يدوياً
+  DISABLED
+
+  /// الرابط منتهي الصلاحية
+  EXPIRED
+}
+
+enum ActivityAction {
+  /// إنشاء سجل جديد
+  CREATE
+
+  /// تعديل سجل
+  UPDATE
+
+  /// حذف سجل
+  DELETE
+
+  /// تسجيل دخول
+  LOGIN
+
+  /// رفع صورة
+  UPLOAD_PHOTO
+
+  /// حذف صورة
+  DELETE_PHOTO
+
+  /// إنشاء رابط عام
+  CREATE_PUBLIC_LINK
+
+  /// تعطيل رابط عام
+  DISABLE_PUBLIC_LINK
+
+  /// مشاركة عبر واتساب
+  SHARE_WHATSAPP
+
+  /// زيارة رابط عام من عميل
+  VIEW_PUBLIC_LINK
+}
+
+/**
+ * =========================
+ * Users / Offices / Memberships
+ * =========================
+ */
+
+model User {
+  /// المعرف الأساسي للمستخدم
+  id String @id @default(uuid()) @db.Uuid
+
+  /// إيميل المستخدم، يستخدم لتسجيل الدخول
+  email String @unique
+
+  /// رقم هاتف المستخدم، اختياري وممكن استخدامه لاحقاً
+  phone String? @unique
+
+  /// كلمة المرور بعد التشفير، لا تخزن كلمة المرور الأصلية أبداً
+  passwordHash String
+
+  /// الاسم الكامل للمستخدم
+  fullName String
+
+  /// رابط صورة المستخدم الشخصية، اختياري
+  avatarUrl String?
+
+  /// حالة المستخدم: فعال أو موقوف
+  status UserStatus @default(ACTIVE)
+
+  /// هل المستخدم أدمن منصة ويستطيع إدارة أكواد الاشتراك
+  isPlatformAdmin Boolean @default(false)
+
+  /// المكاتب التي ينتمي لها المستخدم
+  memberships OfficeMember[]
+
+  /// أكواد الاشتراك التي أنشأها هذا الأدمن
+  createdSubscriptionCodes SubscriptionCode[] @relation("SubscriptionCodeCreatedBy")
+
+  /// أكواد الاشتراك التي استخدمها هذا المستخدم
+  redeemedSubscriptionCodes SubscriptionCode[] @relation("SubscriptionCodeRedeemedBy")
+
+  /// اشتراكات المكتب التي فعّلها هذا المستخدم
+  redeemedOfficeSubscriptions OfficeSubscription[] @relation("OfficeSubscriptionRedeemedBy")
+
+  /// العقارات التي أنشأها هذا المستخدم
+  createdProperties Property[] @relation("PropertyCreatedBy")
+
+  /// العقارات التي عدلها هذا المستخدم آخر مرة
+  updatedProperties Property[] @relation("PropertyUpdatedBy")
+
+  /// سجل النشاطات الخاصة بهذا المستخدم
+  activityLogs ActivityLog[]
+
+  /// تاريخ إنشاء المستخدم
+  createdAt DateTime @default(now())
+
+  /// تاريخ آخر تعديل على المستخدم
+  updatedAt DateTime @updatedAt
+
+  /// تاريخ آخر تسجيل دخول
+  lastLoginAt DateTime?
+
+  /// فهرس لتسريع البحث حسب حالة المستخدم
+  @@index([status])
+  /// فهرس لتسريع الترتيب أو البحث حسب تاريخ الإنشاء
+  @@index([createdAt])
+}
+
+model Office {
+  /// المعرف الأساسي للمكتب
+  id String @id @default(uuid()) @db.Uuid
+
+  /// اسم المكتب العقاري
+  name String
+
+  /// اسم مختصر فريد يستخدم في الروابط أو التعريف الداخلي
+  slug String @unique
+
+  /// رابط شعار المكتب
+  logoUrl String?
+
+  /// رقم هاتف المكتب
+  phone String?
+
+  /// رقم واتساب المكتب
+  whatsapp String?
+
+  /// إيميل المكتب
+  email String?
+
+  /// مدينة المكتب
+  city String?
+
+  /// دولة المكتب
+  country String?
+
+  /// عنوان المكتب النصي
+  address String?
+
+  /// حالة المكتب: تجربة، فعال، موقوف
+  status OfficeStatus @default(TRIAL)
+
+  /// أعضاء المكتب
+  members OfficeMember[]
+
+  /// اشتراكات المكتب الناتجة عن أكواد الاشتراك
+  subscriptions OfficeSubscription[]
+
+  /// أكواد الاشتراك التي استخدمت لهذا المكتب
+  redeemedSubscriptionCodes SubscriptionCode[] @relation("SubscriptionCodeRedeemedOffice")
+
+  /// عقارات المكتب
+  properties Property[]
+
+  /// مجموعات العقارات الخاصة بالمكتب
+  collections PropertyCollection[]
+
+  /// الروابط العامة التي أنشأها المكتب
+  publicLinks PublicLink[]
+
+  /// سجل نشاطات المكتب
+  activityLogs ActivityLog[]
+
+  /// تاريخ إنشاء المكتب
+  createdAt DateTime @default(now())
+
+  /// تاريخ آخر تعديل على المكتب
+  updatedAt DateTime @updatedAt
+
+  /// تاريخ الحذف الناعم، لا نحذف المكتب فعلياً مباشرة
+  deletedAt DateTime?
+
+  /// فهرس لتسريع البحث حسب حالة المكتب
+  @@index([status])
+  /// فهرس لتسريع البحث حسب الدولة والمدينة
+  @@index([country, city])
+  /// فهرس لتسريع استبعاد المكاتب المحذوفة
+  @@index([deletedAt])
+}
+
+model OfficeMember {
+  /// المعرف الأساسي لعضوية المستخدم داخل المكتب
+  id String @id @default(uuid()) @db.Uuid
+
+  /// معرف المكتب
+  officeId String @db.Uuid
+
+  /// معرف المستخدم
+  userId String @db.Uuid
+
+  /// دور المستخدم داخل المكتب
+  role MemberRole @default(AGENT)
+
+  /// هل العضوية فعالة أم لا
+  isActive Boolean @default(true)
+
+  /// علاقة العضوية بالمكتب
+  office Office @relation(fields: [officeId], references: [id], onDelete: Cascade)
+
+  /// علاقة العضوية بالمستخدم
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// تاريخ إنشاء العضوية
+  createdAt DateTime @default(now())
+
+  /// تاريخ آخر تعديل على العضوية
+  updatedAt DateTime @updatedAt
+
+  /// يمنع تكرار نفس المستخدم داخل نفس المكتب
+  @@unique([officeId, userId])
+  /// يسرّع جلب أعضاء مكتب حسب الدور
+  @@index([officeId, role])
+  /// يسرّع جلب كل المكاتب التي ينتمي لها مستخدم
+  @@index([userId])
+}
+
+/**
+ * =========================
+ * Subscriptions
+ * =========================
+ */
+
+model SubscriptionCode {
+  /// المعرف الأساسي للكود
+  id String @id @default(uuid()) @db.Uuid
+
+  /// بصمة الكود، لا نخزن الكود كنص صريح
+  codeHash String @unique
+
+  /// آخر أحرف من الكود للتمييز الإداري بدون كشفه كاملاً
+  codePreview String
+
+  /// عدد أيام الاشتراك التي يمنحها هذا الكود
+  durationDays Int
+
+  /// حالة الكود
+  status SubscriptionCodeStatus @default(ACTIVE)
+
+  /// تاريخ انتهاء صلاحية استخدام الكود نفسه، اختياري
+  expiresAt DateTime?
+
+  /// ملاحظات داخلية للأدمن
+  notes String?
+
+  /// الأدمن الذي أنشأ الكود
+  createdById String? @db.Uuid
+
+  /// المستخدم الذي استخدم الكود
+  redeemedById String? @db.Uuid
+
+  /// المكتب الذي استفاد من الكود
+  redeemedOfficeId String? @db.Uuid
+
+  /// تاريخ استخدام الكود
+  redeemedAt DateTime?
+
+  /// علاقة الكود بالأدمن المنشئ
+  createdBy User? @relation("SubscriptionCodeCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  /// علاقة الكود بالمستخدم الذي استخدمه
+  redeemedBy User? @relation("SubscriptionCodeRedeemedBy", fields: [redeemedById], references: [id], onDelete: SetNull)
+
+  /// علاقة الكود بالمكتب المستفيد
+  redeemedOffice Office? @relation("SubscriptionCodeRedeemedOffice", fields: [redeemedOfficeId], references: [id], onDelete: SetNull)
+
+  /// الاشتراك الناتج عن استخدام الكود
+  subscription OfficeSubscription?
+
+  /// تاريخ إنشاء الكود
+  createdAt DateTime @default(now())
+
+  /// تاريخ آخر تعديل على الكود
+  updatedAt DateTime @updatedAt
+
+  /// يسرع جلب الأكواد حسب الحالة
+  @@index([status])
+  /// يسرع جلب الأكواد التي شارفت صلاحية استخدامها على الانتهاء
+  @@index([expiresAt])
+  /// يسرع جلب أكواد مكتب معين
+  @@index([redeemedOfficeId])
+  /// يسرع جلب الأكواد التي أنشأها أدمن معين
+  @@index([createdById])
+}
+
+model OfficeSubscription {
+  /// المعرف الأساسي لاشتراك المكتب
+  id String @id @default(uuid()) @db.Uuid
+
+  /// المكتب صاحب الاشتراك
+  officeId String @db.Uuid
+
+  /// الكود الذي فعّل هذا الاشتراك
+  codeId String @unique @db.Uuid
+
+  /// المستخدم الذي استخدم الكود
+  redeemedById String? @db.Uuid
+
+  /// بداية مدة الاشتراك
+  startsAt DateTime
+
+  /// نهاية مدة الاشتراك
+  expiresAt DateTime
+
+  /// علاقة الاشتراك بالمكتب
+  office Office @relation(fields: [officeId], references: [id], onDelete: Cascade)
+
+  /// علاقة الاشتراك بالكود
+  code SubscriptionCode @relation(fields: [codeId], references: [id], onDelete: Restrict)
+
+  /// علاقة الاشتراك بالمستخدم الذي فعّله
+  redeemedBy User? @relation("OfficeSubscriptionRedeemedBy", fields: [redeemedById], references: [id], onDelete: SetNull)
+
+  /// تاريخ إنشاء الاشتراك
+  createdAt DateTime @default(now())
+
+  /// يسرع حساب آخر اشتراك لمكتب معين
+  @@index([officeId, expiresAt])
+  /// يسرع البحث عن الاشتراكات المنتهية
+  @@index([expiresAt])
+  /// يسرع جلب الاشتراكات حسب المستخدم الذي فعّلها
+  @@index([redeemedById])
+}
+
+/**
+ * =========================
+ * Properties
+ * =========================
+ */
+
+model Property {
+  /// المعرف الأساسي للعقار
+  id String @id @default(uuid()) @db.Uuid
+
+  /// معرف المكتب صاحب العقار
+  officeId String @db.Uuid
+
+  /// كود داخلي اختياري للعقار داخل المكتب مثل AP-102
+  code String?
+
+  /// عنوان مختصر للعقار، مثل: شقة مفروشة في المزة
+  title String
+
+  /// نوع العقار: شقة، فيلا، محل، أرض...
+  type PropertyType
+
+  /// الغرض: بيع أو إيجار
+  purpose PropertyPurpose
+
+  /// حالة العقار الحالية
+  status PropertyStatus @default(DRAFT)
+
+  /// الدولة التي يوجد فيها العقار
+  country String?
+
+  /// المدينة التي يوجد فيها العقار
+  city String?
+
+  /// المنطقة العامة للعقار
+  area String?
+
+  /// الحي أو المنطقة الفرعية
+  neighborhood String?
+
+  /// نص موقع عام يظهر للعميل، بدون كشف العنوان الدقيق
+  publicLocationText String?
+
+  /// خط العرض، اختياري
+  latitude Decimal? @db.Decimal(10, 7)
+
+  /// خط الطول، اختياري
+  longitude Decimal? @db.Decimal(10, 7)
+
+  /// سعر العقار
+  price Decimal? @db.Decimal(14, 2)
+
+  /// عملة السعر، مثل USD أو EUR أو SYP
+  currency String @default("USD")
+
+  /// هل السعر قابل للتفاوض
+  isPriceNegotiable Boolean @default(false)
+
+  /// مساحة البناء بالمتر المربع
+  sizeSqm Decimal? @db.Decimal(10, 2)
+
+  /// مساحة الأرض بالمتر المربع، مهمة للأراضي والفلل
+  landSizeSqm Decimal? @db.Decimal(10, 2)
+
+  /// عدد الغرف العام
+  rooms Int?
+
+  /// عدد غرف النوم
+  bedrooms Int?
+
+  /// عدد الحمامات
+  bathrooms Int?
+
+  /// الطابق الذي يوجد فيه العقار
+  floor Int?
+
+  /// عدد طوابق البناء بالكامل
+  totalFloors Int?
+
+  /// عمر البناء بالسنوات
+  buildingAgeYears Int?
+
+  /// حالة الفرش
+  furnishing FurnishingStatus @default(UNKNOWN)
+
+  /// هل يوجد مصعد
+  hasElevator Boolean?
+
+  /// هل يوجد موقف سيارة
+  hasParking Boolean?
+
+  /// هل يوجد بلكون
+  hasBalcony Boolean?
+
+  /// هل يوجد حديقة
+  hasGarden Boolean?
+
+  /// هل يوجد مسبح
+  hasPool Boolean?
+
+  /// هل يوجد تدفئة
+  hasHeating Boolean?
+
+  /// هل يوجد تبريد أو تكييف
+  hasCooling Boolean?
+
+  /// وصف عام يظهر للعميل
+  descriptionPublic String?
+
+  /// ملاحظات داخلية لا تظهر للعميل
+  notesInternal String?
+
+  /// تاريخ توفر العقار إذا كان متاحاً من تاريخ معين
+  availableFrom DateTime?
+
+  /// آخر مرة تم تأكيد أن العقار ما زال متاحاً
+  lastConfirmedAt DateTime?
+
+  /// علاقة العقار بالمكتب
+  office Office @relation(fields: [officeId], references: [id], onDelete: Cascade)
+
+  /// التفاصيل الخاصة الحساسة للعقار
+  privateDetails PropertyPrivateDetails?
+
+  /// صور العقار
+  photos PropertyPhoto[]
+
+  /// المجموعات التي تم إدراج هذا العقار فيها
+  collectionItems CollectionItem[]
+
+  /// الروابط العامة الخاصة بهذا العقار
+  publicLinks PublicLink[]
+
+  /// معرف المستخدم الذي أنشأ العقار
+  createdById String? @db.Uuid
+
+  /// معرف آخر مستخدم عدّل العقار
+  updatedById String? @db.Uuid
+
+  /// علاقة العقار بالمستخدم الذي أنشأه
+  createdBy User? @relation("PropertyCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+
+  /// علاقة العقار بآخر مستخدم عدّله
+  updatedBy User? @relation("PropertyUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  /// تاريخ إنشاء العقار
+  createdAt DateTime @default(now())
+
+  /// تاريخ آخر تعديل على العقار
+  updatedAt DateTime @updatedAt
+
+  /// تاريخ الحذف الناعم للعقار
+  deletedAt DateTime?
+
+  /// يمنع تكرار نفس كود العقار داخل نفس المكتب
+  @@unique([officeId, code])
+  /// يسرّع البحث عن عقارات المكتب حسب الحالة
+  @@index([officeId, status])
+  /// يسرّع البحث عن عقارات المكتب حسب النوع
+  @@index([officeId, type])
+  /// يسرّع البحث عن عقارات المكتب حسب بيع أو إيجار
+  @@index([officeId, purpose])
+  /// يسرّع البحث الجغرافي النصي حسب المدينة والمنطقة
+  @@index([officeId, city, area])
+  /// يسرّع الفلترة حسب السعر
+  @@index([officeId, price])
+  /// يسرّع ترتيب العقارات حسب تاريخ الإنشاء
+  @@index([officeId, createdAt])
+  /// يسرّع استبعاد العقارات المحذوفة
+  @@index([officeId, deletedAt])
+}
+
+model PropertyPrivateDetails {
+  /// المعرف الأساسي للتفاصيل الخاصة
+  id String @id @default(uuid()) @db.Uuid
+
+  /// معرف العقار المرتبط بهذه التفاصيل
+  propertyId String @unique @db.Uuid
+
+  /// معرف المكتب، موجود لتسهيل العزل والاستعلامات الآمنة
+  officeId String @db.Uuid
+
+  /// اسم صاحب العقار، لا يظهر للعميل
+  ownerName String?
+
+  /// رقم صاحب العقار، لا يظهر للعميل
+  ownerPhone String?
+
+  /// واتساب صاحب العقار، لا يظهر للعميل
+  ownerWhatsapp String?
+
+  /// العنوان الدقيق للعقار، لا يظهر للعميل افتراضياً
+  exactAddress String?
+
+  /// ملاحظة داخلية عن الموقع
+  privateLocationNote String?
+
+  /// أقل سعر مقبول من صاحب العقار
+  minimumAcceptablePrice Decimal? @db.Decimal(14, 2)
+
+  /// ملاحظة عن العمولة أو الاتفاق المالي
+  commissionNote String?
+
+  /// ملاحظة قانونية داخلية
+  legalNote String?
+
+  /// تحذير داخلي خاص بالمكتب
+  internalWarning String?
+
+  /// علاقة التفاصيل الخاصة بالعقار
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  /// تاريخ إنشاء التفاصيل الخاصة
+  createdAt DateTime @default(now())
+
+  /// تاريخ آخر تعديل على التفاصيل الخاصة
+  updatedAt DateTime @updatedAt
+
+  /// يسرّع جلب التفاصيل الخاصة حسب المكتب
+  @@index([officeId])
+}
+
+/**
+ * =========================
+ * Photos
+ * =========================
+ */
+
+model PropertyPhoto {
+  /// المعرف الأساسي للصورة
+  id String @id @default(uuid()) @db.Uuid
+
+  /// معرف العقار الذي تتبع له الصورة
+  propertyId String @db.Uuid
+
+  /// معرف المكتب، لتسهيل العزل والاستعلام
+  officeId String @db.Uuid
+
+  /// رابط الصورة الأصلية أو النسخة المعروضة
+  url String
+
+  /// رابط الصورة المصغرة
+  thumbnailUrl String?
+
+  /// مفتاح الصورة داخل التخزين مثل S3 أو Cloudflare R2
+  storageKey String?
+
+  /// مفتاح الصورة المصغرة داخل التخزين
+  thumbnailStorageKey String?
+
+  /// تسمية اختيارية للصورة مثل: مطبخ، صالون، غرفة نوم
+  label String?
+
+  /// نوع الغرفة أو القسم الظاهر بالصورة
+  roomType String?
+
+  /// ترتيب الصورة داخل ألبوم العقار
+  sortOrder Int @default(0)
+
+  /// هل الصورة عامة تظهر للعميل أم خاصة
+  visibility PhotoVisibility @default(PUBLIC)
+
+  /// عرض الصورة بالبكسل
+  width Int?
+
+  /// ارتفاع الصورة بالبكسل
+  height Int?
+
+  /// حجم الصورة بالبايت
+  sizeBytes Int?
+
+  /// نوع الملف مثل image/jpeg أو image/webp
+  mimeType String?
+
+  /// علاقة الصورة بالعقار
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  /// تاريخ رفع الصورة
+  createdAt DateTime @default(now())
+
+  /// تاريخ آخر تعديل على بيانات الصورة
+  updatedAt DateTime @updatedAt
+
+  /// تاريخ الحذف الناعم للصورة
+  deletedAt DateTime?
+
+  /// يسرّع جلب صور المكتب
+  @@index([officeId])
+  /// يسرّع جلب صور عقار مرتبة
+  @@index([propertyId, sortOrder])
+  /// يسرّع جلب الصور العامة فقط أو الخاصة فقط
+  @@index([propertyId, visibility])
+  /// يسرّع استبعاد الصور المحذوفة
+  @@index([deletedAt])
+}
+
+/**
+ * =========================
+ * Collections
+ * =========================
+ */
+
+model PropertyCollection {
+  /// المعرف الأساسي لمجموعة العقارات
+  id String @id @default(uuid()) @db.Uuid
+
+  /// معرف المكتب صاحب المجموعة
+  officeId String @db.Uuid
+
+  /// عنوان المجموعة، مثل: شقق مناسبة للعميل أحمد
+  title String
+
+  /// وصف اختياري للمجموعة
+  description String?
+
+  /// اسم العميل المرتبط بهذه المجموعة، اختياري
+  clientName String?
+
+  /// رقم العميل المرتبط بهذه المجموعة، اختياري
+  clientPhone String?
+
+  /// علاقة المجموعة بالمكتب
+  office Office @relation(fields: [officeId], references: [id], onDelete: Cascade)
+
+  /// العقارات الموجودة داخل المجموعة
+  items CollectionItem[]
+
+  /// الروابط العامة الخاصة بهذه المجموعة
+  publicLinks PublicLink[]
+
+  /// معرف المستخدم الذي أنشأ المجموعة
+  createdById String? @db.Uuid
+
+  /// تاريخ إنشاء المجموعة
+  createdAt DateTime @default(now())
+
+  /// تاريخ آخر تعديل على المجموعة
+  updatedAt DateTime @updatedAt
+
+  /// تاريخ الحذف الناعم للمجموعة
+  deletedAt DateTime?
+
+  /// يسرّع جلب مجموعات المكتب مرتبة حسب التاريخ
+  @@index([officeId, createdAt])
+  /// يسرّع استبعاد المجموعات المحذوفة
+  @@index([officeId, deletedAt])
+}
+
+model CollectionItem {
+  /// المعرف الأساسي لعنصر داخل المجموعة
+  id String @id @default(uuid()) @db.Uuid
+
+  /// معرف المجموعة
+  collectionId String @db.Uuid
+
+  /// معرف العقار الموجود داخل المجموعة
+  propertyId String @db.Uuid
+
+  /// معرف المكتب، لتسهيل العزل والاستعلام
+  officeId String @db.Uuid
+
+  /// ترتيب العقار داخل المجموعة
+  sortOrder Int @default(0)
+
+  /// ملاحظة خاصة بهذا العقار داخل هذه المجموعة
+  note String?
+
+  /// علاقة العنصر بالمجموعة
+  collection PropertyCollection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  /// علاقة العنصر بالعقار
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  /// تاريخ إضافة العقار إلى المجموعة
+  createdAt DateTime @default(now())
+
+  /// يمنع تكرار نفس العقار داخل نفس المجموعة
+  @@unique([collectionId, propertyId])
+  /// يسرّع جلب عناصر مكتب معين
+  @@index([officeId])
+  /// يسرّع جلب عناصر مجموعة مرتبة
+  @@index([collectionId, sortOrder])
+  /// يسرّع معرفة أي مجموعات تحتوي عقار معين
+  @@index([propertyId])
+}
+
+/**
+ * =========================
+ * Public Links
+ * =========================
+ */
+
+model PublicLink {
+  /// المعرف الأساسي للرابط العام
+  id String @id @default(uuid()) @db.Uuid
+
+  /// معرف المكتب صاحب الرابط
+  officeId String @db.Uuid
+
+  /// نوع الرابط: عقار واحد أو مجموعة عقارات
+  type PublicLinkType
+
+  /// حالة الرابط: فعال، معطل، منتهي
+  status PublicLinkStatus @default(ACTIVE)
+
+  /// رمز عشوائي للرابط العام، لا تستخدم id العقار بالرابط
+  token String @unique
+
+  /// معرف العقار إذا كان الرابط لعقار واحد
+  propertyId String? @db.Uuid
+
+  /// معرف المجموعة إذا كان الرابط لمجموعة عقارات
+  collectionId String? @db.Uuid
+
+  /// تاريخ انتهاء الرابط، اختياري
+  expiresAt DateTime?
+
+  /// عدد مرات مشاهدة الرابط
+  viewCount Int @default(0)
+
+  /// هل يظهر السعر في الرابط العام
+  showPrice Boolean @default(true)
+
+  /// هل يظهر الموقع الدقيق للعميل
+  showExactLocation Boolean @default(false)
+
+  /// هل يظهر زر التواصل عبر واتساب
+  allowWhatsAppContact Boolean @default(true)
+
+  /// علاقة الرابط بالمكتب
+  office Office @relation(fields: [officeId], references: [id], onDelete: Cascade)
+
+  /// علاقة الرابط بالعقار إذا كان نوعه PROPERTY
+  property Property? @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  /// علاقة الرابط بالمجموعة إذا كان نوعه COLLECTION
+  collection PropertyCollection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+  /// زيارات هذا الرابط
+  views PublicLinkView[]
+
+  /// معرف المستخدم الذي أنشأ الرابط
+  createdById String? @db.Uuid
+
+  /// تاريخ إنشاء الرابط
+  createdAt DateTime @default(now())
+
+  /// تاريخ آخر تعديل على الرابط
+  updatedAt DateTime @updatedAt
+
+  /// تاريخ تعطيل الرابط
+  disabledAt DateTime?
+
+  /// يسرّع جلب روابط المكتب حسب النوع
+  @@index([officeId, type])
+  /// يسرّع جلب روابط المكتب حسب الحالة
+  @@index([officeId, status])
+  /// يسرّع جلب روابط عقار معين
+  @@index([propertyId])
+  /// يسرّع جلب روابط مجموعة معينة
+  @@index([collectionId])
+  /// يسرّع فحص الروابط المنتهية
+  @@index([expiresAt])
+}
+
+model PublicLinkView {
+  /// المعرف الأساسي لزيارة الرابط
+  id String @id @default(uuid()) @db.Uuid
+
+  /// معرف الرابط الذي تمت زيارته
+  publicLinkId String @db.Uuid
+
+  /// معرف المكتب صاحب الرابط
+  officeId String @db.Uuid
+
+  /// IP الزائر، اختياري ولا تعتمد عليه كهوية مؤكدة
+  ipAddress String?
+
+  /// معلومات المتصفح أو الجهاز
+  userAgent String?
+
+  /// مصدر الزيارة إن وجد
+  referrer String?
+
+  /// علاقة الزيارة بالرابط العام
+  publicLink PublicLink @relation(fields: [publicLinkId], references: [id], onDelete: Cascade)
+
+  /// وقت الزيارة
+  createdAt DateTime @default(now())
+
+  /// يسرّع تحليل زيارات رابط معين حسب الوقت
+  @@index([publicLinkId, createdAt])
+  /// يسرّع تحليل زيارات مكتب معين حسب الوقت
+  @@index([officeId, createdAt])
+}
+
+/**
+ * =========================
+ * Activity Logs
+ * =========================
+ */
+
+model ActivityLog {
+  /// المعرف الأساسي لسجل النشاط
+  id String @id @default(uuid()) @db.Uuid
+
+  /// معرف المكتب الذي حصل داخله النشاط
+  officeId String @db.Uuid
+
+  /// معرف المستخدم الذي قام بالنشاط، اختياري
+  userId String? @db.Uuid
+
+  /// نوع العملية التي حدثت
+  action ActivityAction
+
+  /// نوع الكيان المتأثر، مثل Property أو PublicLink
+  entityType String?
+
+  /// معرف الكيان المتأثر
+  entityId String?
+
+  /// رسالة نصية توضّح النشاط
+  message String?
+
+  /// بيانات إضافية مرنة بصيغة JSON
+  metadata Json?
+
+  /// علاقة السجل بالمكتب
+  office Office @relation(fields: [officeId], references: [id], onDelete: Cascade)
+
+  /// علاقة السجل بالمستخدم
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  /// تاريخ حدوث النشاط
+  createdAt DateTime @default(now())
+
+  /// يسرّع جلب نشاطات مكتب حسب الوقت
+  @@index([officeId, createdAt])
+  /// يسرّع جلب نشاطات مكتب حسب نوع العملية
+  @@index([officeId, action])
+  /// يسرّع جلب نشاطات مستخدم معين
+  @@index([userId])
+}

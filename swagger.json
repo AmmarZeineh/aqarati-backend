@@ -1,0 +1,2307 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/test": {
+      "get": {
+        "operationId": "getHello",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["App"]
+      }
+    },
+    "/api/roles": {
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateRoleDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RoleDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "Create role",
+        "tags": ["Roles"]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "skip",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 0, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 10, "type": "number" }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedRoleDtoResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List roles",
+        "tags": ["Roles"]
+      }
+    },
+    "/api/roles/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RoleDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get role by id",
+        "tags": ["Roles"]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateRoleDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RoleDto" }
+              }
+            }
+          }
+        },
+        "summary": "Update role",
+        "tags": ["Roles"]
+      },
+      "delete": {
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Message" }
+              }
+            }
+          }
+        },
+        "summary": "Delete role (soft delete)",
+        "tags": ["Roles"]
+      }
+    },
+    "/api/permissions": {
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreatePermissionDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PermissionDto" }
+              }
+            }
+          }
+        },
+        "summary": "Create permission",
+        "tags": ["Permissions"]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "skip",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 0, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 10, "type": "number" }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPermissionDtoResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "List permissions",
+        "tags": ["Permissions"]
+      }
+    },
+    "/api/permissions/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PermissionDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get permission by id",
+        "tags": ["Permissions"]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdatePermissionDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/PermissionDto" }
+              }
+            }
+          }
+        },
+        "summary": "Update permission",
+        "tags": ["Permissions"]
+      },
+      "delete": {
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Message" }
+              }
+            }
+          }
+        },
+        "summary": "Delete permission (soft delete)",
+        "tags": ["Permissions"]
+      }
+    },
+    "/api/roles/{roleId}/permissions": {
+      "get": {
+        "operationId": "get",
+        "parameters": [
+          {
+            "name": "roleId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RolePermissionsDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get permissions of a role",
+        "tags": ["Role Permissions"]
+      },
+      "put": {
+        "operationId": "assign",
+        "parameters": [
+          {
+            "name": "roleId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignRolePermissionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RolePermissionsDto" }
+              }
+            }
+          }
+        },
+        "summary": "Assign multiple permissions to a role",
+        "tags": ["Role Permissions"]
+      }
+    },
+    "/api/auth/admin/login": {
+      "post": {
+        "operationId": "adminLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginDto" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthDto" }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "/api/auth/driver/login": {
+      "post": {
+        "operationId": "driverLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginDto" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthDto" }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "/api/auth/rider/login": {
+      "post": {
+        "operationId": "riderLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LoginDto" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AuthDto" }
+              }
+            }
+          }
+        },
+        "tags": ["Auth"]
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "operationId": "logout",
+        "parameters": [],
+        "responses": { "201": { "description": "" } },
+        "tags": ["Auth"]
+      }
+    },
+    "/api/user/drivers": {
+      "post": {
+        "operationId": "createDriver",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateDriverDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DriverUserDto" }
+              }
+            }
+          }
+        },
+        "summary": "Create a new driver",
+        "tags": ["User"]
+      },
+      "get": {
+        "operationId": "findAllDrivers",
+        "parameters": [
+          {
+            "name": "skip",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 0, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 10, "type": "number" }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FindAllDriverDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get all drivers",
+        "tags": ["User"]
+      }
+    },
+    "/api/user/drivers/{id}": {
+      "get": {
+        "operationId": "findDriver",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DriverUserDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get a driver by ID",
+        "tags": ["User"]
+      }
+    },
+    "/api/user/riders": {
+      "post": {
+        "operationId": "createRider",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateRiderDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RiderUserDto" }
+              }
+            }
+          }
+        },
+        "summary": "Create rider account (or add rider role to existing user)",
+        "tags": ["User"]
+      },
+      "get": {
+        "operationId": "findAllRiders",
+        "parameters": [
+          {
+            "name": "skip",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 0, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 10, "type": "number" }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FindAllDriverDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get all riders",
+        "tags": ["User"]
+      }
+    },
+    "/api/user/riders/{id}": {
+      "get": {
+        "operationId": "findRider",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RiderUserDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get a rider by ID",
+        "tags": ["User"]
+      }
+    },
+    "/api/user/employees": {
+      "post": {
+        "operationId": "createAdmin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateAdminDto" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AdminUserDto" }
+              }
+            }
+          }
+        },
+        "summary": "Create employee account (or add employee role to existing user)",
+        "tags": ["User"]
+      }
+    },
+    "/api/user/admins": {
+      "get": {
+        "operationId": "findAllAdmins",
+        "parameters": [
+          {
+            "name": "skip",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 0, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 10, "type": "number" }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FindAllAdminDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get all admins",
+        "tags": ["User"]
+      }
+    },
+    "/api/user/admins/{id}": {
+      "get": {
+        "operationId": "findAdmin",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AdminUserDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get an admin by ID",
+        "tags": ["User"]
+      }
+    },
+    "/api/verification-otp/rider/send-otp": {
+      "post": {
+        "operationId": "sendRider",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SendOtpDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "summary": "Send OTP for rider (email/phone)",
+        "tags": ["Verification OTP"]
+      }
+    },
+    "/api/verification-otp/rider/verify-otp": {
+      "post": {
+        "operationId": "verifyRider",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VerifyOtpDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "summary": "Verify OTP for rider (email/phone)",
+        "tags": ["Verification OTP"]
+      }
+    },
+    "/api/verification-otp/driver/send-otp": {
+      "post": {
+        "operationId": "sendDriver",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SendOtpDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "summary": "Send OTP for driver (email/phone)",
+        "tags": ["Verification OTP"]
+      }
+    },
+    "/api/verification-otp/driver/verify-otp": {
+      "post": {
+        "operationId": "verifyDriver",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/VerifyOtpDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "summary": "Verify OTP for driver (email/phone)",
+        "tags": ["Verification OTP"]
+      }
+    },
+    "/api/driver-approval-requests": {
+      "post": {
+        "description": "Creates a new driver approval request for the current driver and submits it immediately for admin review.",
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDriverApprovalRequestSwaggerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverApprovalRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "[Driver] Submit a driver approval request",
+        "tags": ["Driver Approval Requests"]
+      },
+      "get": {
+        "description": "Returns a paginated list of driver approval requests. Supports filtering by status and search keyword.",
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "skip",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 0, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 10, "type": "number" }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Search in nationalId/license/plate...",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "submitted",
+                "under_review",
+                "approved",
+                "rejected",
+                "blocked"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllDriverApprovalRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "[Admin] List driver approval requests",
+        "tags": ["Driver Approval Requests"]
+      }
+    },
+    "/api/driver-approval-requests/me": {
+      "get": {
+        "description": "Returns the current logged-in driver approval request (if exists).",
+        "operationId": "me",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverApprovalRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "[Driver] Get my driver approval request",
+        "tags": ["Driver Approval Requests"]
+      }
+    },
+    "/api/driver-approval-requests/{id}": {
+      "get": {
+        "description": "Returns a single driver approval request by its ID.",
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverApprovalRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "[Admin] Get driver approval request by id",
+        "tags": ["Driver Approval Requests"]
+      }
+    },
+    "/api/driver-approval-requests/{id}/approve": {
+      "patch": {
+        "description": "Approves the request and marks the driver profile as approved. Stores reviewer admin ID and reviewedAt.",
+        "operationId": "approve",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateVehicleDto" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverApprovalRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "[Admin] Approve a driver approval request",
+        "tags": ["Driver Approval Requests"]
+      }
+    },
+    "/api/driver-approval-requests/{id}/reject": {
+      "patch": {
+        "description": "Rejects the request with a rejection reason and marks the driver profile as rejected. Stores reviewer admin ID and reviewedAt.",
+        "operationId": "reject",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RejectDriverApprovalRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DriverApprovalRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "[Admin] Reject a driver approval request",
+        "tags": ["Driver Approval Requests"]
+      }
+    },
+    "/api/vehicles": {
+      "get": {
+        "operationId": "findAll",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FindAllVehicleDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get all vehicles",
+        "tags": ["Vehicles"]
+      }
+    },
+    "/api/vehicles/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VehicleDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get vehicle by id",
+        "tags": ["Vehicles"]
+      }
+    },
+    "/api/vehicle-types": {
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVehicleTypeSwaggerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VehicleTypeDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "Create vehicle type",
+        "tags": ["Vehicle Types"]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllVehicleTypeDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "List vehicle types (admin)",
+        "tags": ["Vehicle Types"]
+      }
+    },
+    "/api/vehicle-types/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VehicleTypeDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "Get vehicle type by id (admin)",
+        "tags": ["Vehicle Types"]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateVehicleTypeSwaggerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/VehicleTypeDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "Update vehicle type (admin)",
+        "tags": ["Vehicle Types"]
+      },
+      "delete": {
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "access-token": [] }],
+        "summary": "Delete vehicle type (admin)",
+        "tags": ["Vehicle Types"]
+      }
+    },
+    "/api/ride-requests": {
+      "post": {
+        "operationId": "createAndEstimate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RideRequestDto" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RideEstimateResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "[Rider] Create ride request and get estimates for all active vehicle types",
+        "tags": ["Ride Requests"]
+      }
+    },
+    "/api/ride-requests/submit": {
+      "post": {
+        "operationId": "submit",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/SubmitRideRequestDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "security": [{ "access-token": [] }],
+        "tags": ["Ride Requests"]
+      }
+    },
+    "/api/dispatch/start/{rideRequestId}": {
+      "post": {
+        "description": "Allowed only for rider and admin accounts.",
+        "operationId": "startDispatch",
+        "parameters": [
+          {
+            "name": "rideRequestId",
+            "required": true,
+            "in": "path",
+            "description": "Ride request ID",
+            "schema": { "example": 1, "type": "number" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dispatch started successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "message": "Dispatch started successfully"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Missing or invalid access token" },
+          "403": { "description": "User role is not allowed" }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "Start dispatching for a ride request",
+        "tags": ["Dispatch"]
+      }
+    },
+    "/api/driver/go-online": {
+      "post": {
+        "operationId": "goOnline",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LocationDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Successfully marked as online" }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "Mark driver as online and update location",
+        "tags": ["Driver"]
+      }
+    },
+    "/api/driver/go-offline": {
+      "post": {
+        "operationId": "goOffline",
+        "parameters": [],
+        "responses": {
+          "200": { "description": "Successfully marked as offline" }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "Mark driver as offline",
+        "tags": ["Driver"]
+      }
+    },
+    "/api/driver/location": {
+      "post": {
+        "operationId": "updateLocation",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/LocationDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Location successfully updated" }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "Update driver live location",
+        "tags": ["Driver"]
+      }
+    },
+    "/api/driver/radius": {
+      "post": {
+        "operationId": "setRadius",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DriverRadiusDto" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Radius successfully updated" }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "Update driver preferred request radius",
+        "tags": ["Driver"]
+      }
+    },
+    "/api/driver-documents": {
+      "post": {
+        "operationId": "create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDriverDocumentSwaggerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DriverDocumentDto" }
+              }
+            }
+          }
+        },
+        "summary": "Create a new driver document",
+        "tags": ["Driver Documents"]
+      },
+      "get": {
+        "description": "Get all driver documents",
+        "operationId": "findAll",
+        "parameters": [
+          {
+            "name": "skip",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 0, "default": 0, "type": "number" }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": { "minimum": 1, "default": 10, "type": "number" }
+          },
+          {
+            "name": "docType",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["license", "insurance", "mechanic", "identity", "other"]
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["pending", "approved", "rejected", "expired"]
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FindAllDriverDocumentDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get all driver documents",
+        "tags": ["Driver Documents"]
+      }
+    },
+    "/api/driver-documents/me": {
+      "get": {
+        "operationId": "findMyDocuments",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "security": [{ "access-token": [] }],
+        "tags": ["Driver Documents"]
+      }
+    },
+    "/api/driver-documents/driver-profile/{driverProfileId}": {
+      "get": {
+        "operationId": "findByDriverProfileId",
+        "parameters": [
+          {
+            "name": "driverProfileId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/DriverDocumentDto" }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get driver documents by driver profile id",
+        "tags": ["Driver Documents"]
+      }
+    },
+    "/api/driver-documents/{id}": {
+      "get": {
+        "operationId": "findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DriverDocumentDto" }
+              }
+            }
+          }
+        },
+        "summary": "Get a driver document",
+        "tags": ["Driver Documents"]
+      },
+      "patch": {
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDriverDocumentSwaggerDto"
+              }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["Driver Documents"]
+      },
+      "delete": {
+        "operationId": "remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DriverDocumentDto" }
+              }
+            }
+          }
+        },
+        "summary": "Delete a driver document",
+        "tags": ["Driver Documents"]
+      }
+    },
+    "/api/app-settings": {
+      "post": {
+        "operationId": "upsert",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UpdateSettingDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "security": [{ "access-token": [] }],
+        "tags": ["AppSettings"]
+      },
+      "get": {
+        "operationId": "findAll",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["AppSettings"]
+      }
+    },
+    "/api/app-settings/{key}": {
+      "get": {
+        "operationId": "findByKey",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["AppSettings"]
+      }
+    },
+    "/api/trips/by-ride/{rideRequestId}": {
+      "get": {
+        "operationId": "getByRideRequestId",
+        "parameters": [
+          {
+            "name": "rideRequestId",
+            "required": true,
+            "in": "path",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TripDetailsDto" }
+              }
+            }
+          }
+        },
+        "security": [{ "access-token": [] }],
+        "summary": "[Rider] Fetch matched trip details by ride request id",
+        "tags": ["Trips"]
+      }
+    }
+  },
+  "info": {
+    "title": "Competition",
+    "description": "An API to manage competitions",
+    "version": "1.0.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "access-token": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "in": "header",
+        "name": "Authorization",
+        "description": "Enter your Bearer token"
+      }
+    },
+    "schemas": {
+      "CreateRoleDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string", "example": "SUPERADMIN" } },
+        "required": ["name"]
+      },
+      "RoleDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "name": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "deletedAt": { "type": "object" }
+        },
+        "required": ["id", "name", "createdAt", "updatedAt"]
+      },
+      "PaginatedRoleDtoResponseDto": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number" },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RoleDto" }
+          }
+        },
+        "required": ["count", "data"]
+      },
+      "UpdateRoleDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string", "example": "ADMIN" } }
+      },
+      "Message": {
+        "type": "object",
+        "properties": { "message": { "type": "string" } },
+        "required": ["message"]
+      },
+      "CreatePermissionDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string", "example": "READ_USERS" } },
+        "required": ["name"]
+      },
+      "PermissionDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "name": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "deletedAt": { "type": "object" }
+        },
+        "required": ["id", "name", "createdAt", "updatedAt"]
+      },
+      "PaginatedPermissionDtoResponseDto": {
+        "type": "object",
+        "properties": {
+          "count": { "type": "number" },
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PermissionDto" }
+          }
+        },
+        "required": ["count", "data"]
+      },
+      "UpdatePermissionDto": {
+        "type": "object",
+        "properties": { "name": { "type": "string", "example": "WRITE_USERS" } }
+      },
+      "RolePermissionsDto": {
+        "type": "object",
+        "properties": {
+          "roleId": { "type": "number" },
+          "roleName": { "type": "string" },
+          "permissions": {
+            "example": [
+              { "id": 1, "name": "READ_USERS" },
+              { "id": 2, "name": "WRITE_USERS" }
+            ],
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["roleId", "roleName", "permissions"]
+      },
+      "AssignRolePermissionsDto": {
+        "type": "object",
+        "properties": {
+          "permissionIds": {
+            "description": "Array of permission IDs",
+            "example": [1, 2, 3],
+            "items": { "type": "array", "items": { "type": "a" } },
+            "type": "array"
+          }
+        },
+        "required": ["permissionIds"]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" },
+          "fcmToken": { "type": "string" }
+        },
+        "required": ["email", "password"]
+      },
+      "AuthDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": { "type": "string" },
+          "user": { "type": "object" }
+        },
+        "required": ["accessToken", "user"]
+      },
+      "CreateDriverDto": {
+        "type": "object",
+        "properties": {
+          "fullName": { "type": "string" },
+          "email": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "password": { "type": "string" },
+          "city": { "type": "string" }
+        },
+        "required": ["fullName", "email", "phoneNumber", "password", "city"]
+      },
+      "DriverProfileDto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "number" },
+          "city": { "type": "string" },
+          "approvalStatus": {
+            "type": "string",
+            "enum": ["pending", "approved", "rejected", "blocked"]
+          },
+          "isOnline": { "type": "boolean" },
+          "emailVerifiedAt": { "type": "object", "nullable": true },
+          "phoneVerifiedAt": { "type": "object", "nullable": true },
+          "isVerified": { "type": "boolean" },
+          "lastLoginAt": { "type": "object", "nullable": true },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "userId",
+          "city",
+          "approvalStatus",
+          "isOnline",
+          "emailVerifiedAt",
+          "phoneVerifiedAt",
+          "isVerified",
+          "lastLoginAt",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "DriverUserDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "fullName": { "type": "string" },
+          "email": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "driverProfile": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [{ "$ref": "#/components/schemas/DriverProfileDto" }]
+          }
+        },
+        "required": [
+          "id",
+          "fullName",
+          "email",
+          "phoneNumber",
+          "createdAt",
+          "updatedAt",
+          "driverProfile"
+        ]
+      },
+      "FindAllDriverDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DriverUserDto" }
+          }
+        },
+        "required": ["data"]
+      },
+      "CreateRiderDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "password": { "type": "string" },
+          "fullName": { "type": "string" },
+          "phoneNumber": { "type": "string" }
+        },
+        "required": ["email", "password"]
+      },
+      "RiderProfileDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "userId": { "type": "number" },
+          "emailVerifiedAt": { "type": "object", "nullable": true },
+          "phoneVerifiedAt": { "type": "object", "nullable": true },
+          "isVerified": { "type": "boolean" },
+          "lastLoginAt": { "type": "object", "nullable": true },
+          "ratingAvg": { "type": "number" },
+          "ratingCount": { "type": "number" },
+          "canceledTripsCount": { "type": "number" },
+          "defaultPickupLocation": { "type": "object", "nullable": true },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "id",
+          "userId",
+          "emailVerifiedAt",
+          "phoneVerifiedAt",
+          "isVerified",
+          "lastLoginAt",
+          "ratingAvg",
+          "ratingCount",
+          "canceledTripsCount",
+          "defaultPickupLocation",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "RiderUserDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "fullName": { "type": "string" },
+          "email": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "riderProfile": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [{ "$ref": "#/components/schemas/RiderProfileDto" }]
+          }
+        },
+        "required": [
+          "id",
+          "fullName",
+          "email",
+          "phoneNumber",
+          "createdAt",
+          "updatedAt",
+          "riderProfile"
+        ]
+      },
+      "CreateAdminDto": {
+        "type": "object",
+        "properties": {
+          "fullName": { "type": "string" },
+          "email": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "password": { "type": "string" },
+          "roleId": {
+            "type": "number",
+            "description": "Role ID of the employee"
+          }
+        },
+        "required": ["fullName", "email", "phoneNumber", "password", "roleId"]
+      },
+      "AdminProfileDto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "number" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": ["userId", "createdAt", "updatedAt"]
+      },
+      "AdminUserDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "fullName": { "type": "string" },
+          "email": { "type": "string" },
+          "phoneNumber": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "adminProfile": {
+            "nullable": true,
+            "type": "object",
+            "allOf": [{ "$ref": "#/components/schemas/AdminProfileDto" }]
+          }
+        },
+        "required": [
+          "id",
+          "fullName",
+          "email",
+          "phoneNumber",
+          "createdAt",
+          "updatedAt",
+          "adminProfile"
+        ]
+      },
+      "FindAllAdminDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AdminUserDto" }
+          }
+        },
+        "required": ["data"]
+      },
+      "SendOtpDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "phone": { "type": "string" }
+        }
+      },
+      "VerifyOtpDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "phone": { "type": "string" },
+          "code": { "type": "string", "description": "6-digit code" }
+        },
+        "required": ["code"]
+      },
+      "CreateDriverApprovalRequestSwaggerDto": {
+        "type": "object",
+        "properties": {
+          "userId": { "type": "number" },
+          "nationalIdNumber": { "type": "string" },
+          "driverLicenseNumber": { "type": "string" },
+          "mechanicCardNumber": { "type": "string" },
+          "vehiclePlateNumber": { "type": "string" },
+          "insurancePolicyNumber": { "type": "string" },
+          "vehicleType": { "type": "string" },
+          "vehicleModel": { "type": "string" },
+          "vehicleColor": { "type": "string" },
+          "vehicleYear": { "type": "number", "minimum": 1970, "maximum": 2100 },
+          "image": { "type": "string", "format": "binary" }
+        },
+        "required": [
+          "userId",
+          "nationalIdNumber",
+          "driverLicenseNumber",
+          "image"
+        ]
+      },
+      "DriverApprovalRequestDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "driverProfileId": { "type": "number" },
+          "status": {
+            "type": "string",
+            "enum": [
+              "submitted",
+              "under_review",
+              "approved",
+              "rejected",
+              "blocked"
+            ]
+          },
+          "nationalIdNumber": { "type": "string" },
+          "driverLicenseNumber": { "type": "string" },
+          "mechanicCardNumber": { "type": "object", "nullable": true },
+          "vehiclePlateNumber": { "type": "object", "nullable": true },
+          "insurancePolicyNumber": { "type": "object", "nullable": true },
+          "vehicleType": { "type": "object", "nullable": true },
+          "vehicleModel": { "type": "object", "nullable": true },
+          "vehicleColor": { "type": "object", "nullable": true },
+          "vehicleYear": { "type": "object", "nullable": true },
+          "vehiclePhotoUrl": { "type": "object", "nullable": true },
+          "submittedAt": { "type": "object", "nullable": true },
+          "reviewedAt": { "type": "object", "nullable": true },
+          "reviewedBy": { "type": "object", "nullable": true },
+          "rejectionReason": { "type": "object", "nullable": true },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "id",
+          "driverProfileId",
+          "status",
+          "nationalIdNumber",
+          "driverLicenseNumber",
+          "mechanicCardNumber",
+          "vehiclePlateNumber",
+          "insurancePolicyNumber",
+          "vehicleType",
+          "vehicleModel",
+          "vehicleColor",
+          "vehicleYear",
+          "vehiclePhotoUrl",
+          "submittedAt",
+          "reviewedAt",
+          "reviewedBy",
+          "rejectionReason",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "FindAllDriverApprovalRequestDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DriverApprovalRequestDto" }
+          }
+        },
+        "required": ["data"]
+      },
+      "CreateVehicleDto": {
+        "type": "object",
+        "properties": {
+          "vehicleTypeId": { "type": "number" },
+          "plateNumber": { "type": "string" },
+          "model": { "type": "string" },
+          "color": { "type": "string" },
+          "year": { "type": "number", "minimum": 2006, "maximum": 2026 },
+          "photoUrl": { "type": "string" },
+          "driverProfileId": { "type": "number" },
+          "isPrimary": { "type": "boolean" }
+        },
+        "required": ["vehicleTypeId", "plateNumber", "driverProfileId"]
+      },
+      "RejectDriverApprovalRequestDto": {
+        "type": "object",
+        "properties": { "rejectionReason": { "type": "string" } },
+        "required": ["rejectionReason"]
+      },
+      "VehicleDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "driverProfileId": { "type": "number" },
+          "vehicleTypeId": { "type": "number" },
+          "plateNumber": { "type": "string" },
+          "model": { "type": "object", "nullable": true },
+          "color": { "type": "object", "nullable": true },
+          "year": { "type": "object", "nullable": true },
+          "photoUrl": { "type": "object", "nullable": true },
+          "isPrimary": { "type": "boolean" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" },
+          "vehicleType": { "type": "object", "nullable": true }
+        },
+        "required": [
+          "id",
+          "driverProfileId",
+          "vehicleTypeId",
+          "plateNumber",
+          "model",
+          "color",
+          "year",
+          "photoUrl",
+          "isPrimary",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "FindAllVehicleDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VehicleDto" }
+          }
+        },
+        "required": ["data"]
+      },
+      "CreateVehicleTypeSwaggerDto": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "isActive": { "type": "boolean", "default": true },
+          "multiplier": { "type": "number", "example": 1.2 },
+          "image": { "type": "string", "format": "binary" }
+        },
+        "required": ["name", "image"]
+      },
+      "VehicleTypeDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "name": { "type": "string" },
+          "description": { "type": "object", "nullable": true },
+          "imageUrl": { "type": "object", "nullable": true },
+          "isActive": { "type": "boolean" },
+          "multiplier": { "type": "number" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "imageUrl",
+          "isActive",
+          "multiplier",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "FindAllVehicleTypeDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VehicleTypeDto" }
+          }
+        },
+        "required": ["data"]
+      },
+      "LocationDto": {
+        "type": "object",
+        "properties": {
+          "lat": { "type": "number" },
+          "lng": { "type": "number" },
+          "address": { "type": "string" }
+        },
+        "required": ["lat", "lng"]
+      },
+      "RideRequestDto": {
+        "type": "object",
+        "properties": {
+          "pickup": { "$ref": "#/components/schemas/LocationDto" },
+          "destination": { "$ref": "#/components/schemas/LocationDto" },
+          "stops": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LocationDto" }
+          }
+        },
+        "required": ["pickup", "destination"]
+      },
+      "VehicleTypeEstimateDto": {
+        "type": "object",
+        "properties": {
+          "vehicleTypeId": { "type": "number" },
+          "name": { "type": "string" },
+          "imageUrl": { "type": "object", "nullable": true },
+          "currency": { "type": "string" },
+          "estimatedFare": { "type": "number" }
+        },
+        "required": [
+          "vehicleTypeId",
+          "name",
+          "imageUrl",
+          "currency",
+          "estimatedFare"
+        ]
+      },
+      "RideEstimateResponseDto": {
+        "type": "object",
+        "properties": {
+          "pickup": { "$ref": "#/components/schemas/LocationDto" },
+          "destination": { "$ref": "#/components/schemas/LocationDto" },
+          "stops": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LocationDto" }
+          },
+          "distanceKm": { "type": "number" },
+          "durationMin": { "type": "number" },
+          "stopsCount": { "type": "number" },
+          "isNight": { "type": "boolean" },
+          "estimates": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/VehicleTypeEstimateDto" }
+          }
+        },
+        "required": [
+          "pickup",
+          "destination",
+          "stops",
+          "distanceKm",
+          "durationMin",
+          "stopsCount",
+          "isNight",
+          "estimates"
+        ]
+      },
+      "SubmitRideRequestDto": {
+        "type": "object",
+        "properties": {
+          "pickup": { "$ref": "#/components/schemas/LocationDto" },
+          "destination": { "$ref": "#/components/schemas/LocationDto" },
+          "stops": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/LocationDto" }
+          },
+          "vehicleTypeId": { "type": "number" }
+        },
+        "required": ["pickup", "destination", "vehicleTypeId"]
+      },
+      "DriverRadiusDto": {
+        "type": "object",
+        "properties": {
+          "radiusKm": {
+            "type": "number",
+            "example": 5,
+            "minimum": 1,
+            "maximum": 50
+          }
+        },
+        "required": ["radiusKm"]
+      },
+      "CreateDriverDocumentSwaggerDto": {
+        "type": "object",
+        "properties": {
+          "driverProfileId": { "type": "number" },
+          "docType": {
+            "type": "string",
+            "enum": ["license", "insurance", "mechanic", "identity", "other"]
+          },
+          "issuedAt": { "format": "date-time", "type": "string" },
+          "expiresAt": { "format": "date-time", "type": "string" },
+          "file": { "type": "string", "format": "binary" }
+        },
+        "required": ["driverProfileId", "docType", "file"]
+      },
+      "DriverDocumentDto": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "number" },
+          "driverProfileId": { "type": "number" },
+          "docType": { "type": "string" },
+          "fileUrl": { "type": "string" },
+          "status": {
+            "type": "string",
+            "enum": ["pending", "approved", "rejected", "expired"]
+          },
+          "issuedAt": { "format": "date-time", "type": "string" },
+          "expiresAt": { "format": "date-time", "type": "string" },
+          "verifiedAt": { "format": "date-time", "type": "string" },
+          "verifiedBy": { "type": "string" },
+          "rejectionReason": { "type": "string" },
+          "metaJson": { "type": "string" },
+          "createdAt": { "format": "date-time", "type": "string" },
+          "updatedAt": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "id",
+          "driverProfileId",
+          "docType",
+          "fileUrl",
+          "status",
+          "issuedAt",
+          "expiresAt",
+          "verifiedAt",
+          "verifiedBy",
+          "rejectionReason",
+          "metaJson",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "FindAllDriverDocumentDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DriverDocumentDto" }
+          }
+        },
+        "required": ["data"]
+      },
+      "UpdateSettingDto": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string", "example": "fare.base" },
+          "value": { "type": "string", "example": "1000" }
+        },
+        "required": ["key", "value"]
+      },
+      "TripDetailsDto": {
+        "type": "object",
+        "properties": {
+          "tripId": { "type": "number" },
+          "tripStatus": {
+            "type": "string",
+            "enum": [
+              "assigned",
+              "en_route_to_pickup",
+              "started",
+              "completed",
+              "canceled"
+            ]
+          },
+          "rideRequestId": { "type": "number" },
+          "pickupLat": { "type": "number" },
+          "pickupLng": { "type": "number" },
+          "destinationLat": { "type": "number" },
+          "destinationLng": { "type": "number" },
+          "matchedAt": { "type": "object", "nullable": true },
+          "driverId": { "type": "number" },
+          "driverFirstName": { "type": "string" },
+          "driverLastName": { "type": "string" },
+          "driverProfileImage": { "type": "object", "nullable": true },
+          "driverRatingAvg": { "type": "number" },
+          "vehicleId": { "type": "object", "nullable": true },
+          "plateNumber": { "type": "object", "nullable": true },
+          "color": { "type": "object", "nullable": true },
+          "manufacturer": { "type": "object", "nullable": true },
+          "model": { "type": "object", "nullable": true },
+          "vehicleTypeId": { "type": "object", "nullable": true },
+          "stops": {
+            "nullable": true,
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": [
+          "tripId",
+          "tripStatus",
+          "rideRequestId",
+          "pickupLat",
+          "pickupLng",
+          "destinationLat",
+          "destinationLng",
+          "matchedAt",
+          "driverId",
+          "driverFirstName",
+          "driverLastName",
+          "driverProfileImage",
+          "driverRatingAvg",
+          "vehicleId",
+          "plateNumber",
+          "color",
+          "manufacturer",
+          "model",
+          "vehicleTypeId",
+          "stops"
+        ]
+      }
+    }
+  },
+  "security": [{ "access-token": [] }]
+}
